@@ -1,0 +1,23 @@
+{
+  "name": "mobxmpp",
+  "version": "0.1.0",
+  "main": "index.js",
+  "author": "Martin Wind",
+  "license": "MIT",
+  "scripts": {
+    "build": "babel --presets env --plugins transform-class-properties,transform-object-rest-spread src -d lib",
+    "example-server": "SERVER=1 node examples/app.js",
+    "example-client": "node examples/app.js"
+  },
+  "dependencies": {
+    "@xmpp/client": "^0.3.0",
+    "mobx": "4",
+    "mobx-state-tree": "^2.0.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
+  }
+}
