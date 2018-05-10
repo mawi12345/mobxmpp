@@ -10,8 +10,6 @@ const password = 'changeme'
 const url = 'wss://chat.example.com/ws'
 
 const app = new Connection({
-  username,
-  password,
   url,
   resource: isServer ? 'server' : null
 })
@@ -38,7 +36,13 @@ const filterLobby = (s) => {
 
 console.log(`start as ${isServer ? 'server' : 'client'}`)
 
-app.connect().then(() => {
+// use a wrong password and reconnect
+app.connect({ username, password: '_wrong_' })
+.catch((e) => {
+  // console.log('login failed', e)
+  return app.connect({ username, password })
+})
+.then(() => {
   console.log('is connected')
   if (isServer) {
 
@@ -102,5 +106,6 @@ app.connect().then(() => {
       }
     })
   }
-}).catch((e) => console.error(`Connection ${e}
+})
+.catch((e) => console.error(`Connection ${e}
 Please change username, password and url in examples/app.js`))

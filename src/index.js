@@ -15,8 +15,6 @@ export default class Connection {
     const opts = {
       ns: 'xapi',
       resource: undefined,
-      username: undefined,
-      password: undefined,
       url: undefined,
       pingInterval: 0,
       ...options,
@@ -33,17 +31,25 @@ export default class Connection {
     this.callee = this.client.plugin(iqCalleePlugin)
     this.caller = this.client.plugin(iqCallerPlugin)
 
-    this.client.handle('authenticate', (authenticate) =>
-      authenticate(opts.username, opts.password)
-    )
-
+    this.client.handle('authenticate', (authenticate) => {
+      return authenticate(this.username, this.password)
+    })
     this.client.handle('bind', (bind) => bind(resource))
     this.client.on('online', this._onOnline)
     this.client.on('stanza', this._onStanza)
   }
 
-  connect = () =>
-    this.client.start(this.url)
+  connect = ({ username, password}) => {
+    this.username = username
+    this.password = password
+    return Promise.resolve()
+    .then(() => {
+      if (this.client.status !== 'offline') {
+        return this.client.stop()
+      }
+    }).then(() => this.client.start(this.url))
+  }
+
 
   _onOnline = (jid) => {
     this.jid = jid.toString()
